@@ -1,130 +1,117 @@
 $(function(){
-	var $slides = $('.slide_pics li');
-	var len = $slides.length;
-	var nowli = 0;
-	var prevli = 0;
+
+	var $li = $('.slide_pics li');
+	var len = $li.length;
 	var $prev = $('.prev');
 	var $next = $('.next');
-	var ismove = false;
-	var timer = null;
-	$slides.not(':first').css({left:760});
-	$slides.each(function(index, el) {
-		var $li = $('<li>');
+	// 下一个Li的index
+	var nowli = 0;
+	// 被替换的index
+	var preli = 0;
 
-		if(index==0)
-		{
-			$li.addClass('active');
+	// 让第一张在最前面
+	$li.not(':first').css({
+		left:760
+	});
+
+	// 循环添加 each
+	$li.each(function(index, el) {
+
+		// 元素节点添加
+		var $sli = $('<li>');
+		if(index==0){
+			$sli.addClass('active');
 		}
 
-		$li.appendTo($('.points'));
+		$sli.appendTo('.points');
 	});
-	$points = $('.points li');
-	timer = setInterval(autoplay,4000);
 
-	$('.slide').mouseenter(function() {
+	// 点击 切换
+	$points = $('.points li');
+
+	$points.click(function(){
+		preli = nowli;
+		nowli = $(this).index();
+
+		move();
+
+		$(this).addClass('active').siblings().removeClass('active');
+
+	});
+
+	$prev.click(function(){
+		preli = nowli;
+		nowli --;
+
+		move();
+		$points.eq(nowli).addClass('active').siblings().removeClass('active');
+
+	});
+
+	$next.click(function(){
+		preli = nowli;
+		nowli ++;
+		move();
+		$points.eq(nowli).addClass('active').siblings().removeClass('active');
+
+	});
+
+	$('.slide').mouseenter(function(event) {
 		clearInterval(timer);
 	});
 
-	$('.slide').mouseleave(function() {
-		timer = setInterval(autoplay,4000);
+
+	$('.slide').mouseleave(function(event) {
+		timer = setInterval(auto_play,3000);
 	});
 
-	function autoplay(){
-		nowli++;
+	// 自动播放
+	timer = setInterval(auto_play,3000);
+
+	function auto_play(){
+		preli = nowli;
+		nowli ++;
 		move();
 		$points.eq(nowli).addClass('active').siblings().removeClass('active');
 	}
-
-	$points.click(function(event) {
-		if(ismove)
-		{
-			return;
-		}
-		nowli = $(this).index();
-
-		if(nowli==prevli)
-		{
-			return;
-		}
-		
-		$(this).addClass('active').siblings().removeClass('active');
-		move();
-
-	});
-
-	$prev.click(function() {
-		if(ismove)
-		{
-			return;
-		}		
-		nowli--;
-		move();
-		$points.eq(nowli).addClass('active').siblings().removeClass('active');
-
-	});
-	
-	$next.click(function() {
-		if(ismove)
-		{
-			return;
-		}		
-		nowli++;
-		move();
-		$points.eq(nowli).addClass('active').siblings().removeClass('active');
-
-	});
-
 
 	function move(){
+		if(nowli<0) {
+			nowli = len-1;
+			preli = 0;
 
-		ismove = true;
+			$li.eq(nowli).css({left:-760});
+			$li.eq(preli).animate({left:760}, 300);
+			$li.eq(nowli).animate({left:0}, 300);
 
-		if(nowli<0)
-		{
-			nowli=len-1;
-			prevli = 0
-			$slides.eq(nowli).css({left:-760});
-			$slides.eq(nowli).animate({left:0},800,'easeOutExpo');
-			$slides.eq(prevli).animate({left:760},800,'easeOutExpo',function(){
-				ismove = false;
-			});
-			prevli=nowli;
 			return;
 		}
 
-		if(nowli>len-1)
-		{
+		if (nowli>len-1) {
 			nowli = 0;
-			prevli = len-1;
-			$slides.eq(nowli).css({left:760});
-			$slides.eq(nowli).animate({left:0},800,'easeOutExpo');
-			$slides.eq(prevli).animate({left:-760},800,'easeOutExpo',function(){
-				ismove = false;
-			});
-			prevli=nowli;
+			preli = len-1;
+			$li.eq(nowli).css({left:760});
+			$li.eq(preli).animate({left:-760}, 300);
+			$li.eq(nowli).animate({left:0}, 300);
+
 			return;
 		}
 
+		if (nowli>preli) {
 
-		if(prevli<nowli)
-		{
-			$slides.eq(nowli).css({left:760});			
-			$slides.eq(prevli).animate({left:-760},800,'easeOutExpo');
-			$slides.eq(nowli).animate({left:0},800,'easeOutExpo',function(){
-				ismove = false;
-			});
-			prevli=nowli;
-			
+			$li.eq(nowli).css({left:760});
+			$li.eq(preli).animate({left:-760}, 300);
+
+
 		}
-		else
-		{			
-			$slides.eq(nowli).css({left:-760});			
-			$slides.eq(prevli).animate({left:760},800,'easeOutExpo');	
-			$slides.eq(nowli).animate({left:0},800,'easeOutExpo',function(){
-				ismove = false;
-			});
-			prevli=nowli;		
+		else if(nowli<preli){
+
+			$li.eq(nowli).css({left:-760});
+			$li.eq(preli).animate({left:760}, 300);
+
 		}
+
+		$li.eq(nowli).animate({left:0}, 300);
 
 	}
-})
+});

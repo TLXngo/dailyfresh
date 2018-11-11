@@ -1,30 +1,29 @@
 {% extends 'base_foot.html' %}
 {% block head %}
-    <script>
-    $(function () {
-
-
-    })
-    </script>
 {% endblock head %}
 {% block body %}
 	<div class="header_con">
 		<div class="header">
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
-				<div class="login_info fl">
-					欢迎您：<em>{{ user_name }}</em>
+                {% if request.session.user_name|default:'' != '' %}
+                <div class="login_info fl" style="display: block">
+					欢迎您：<em>{{ request.session.user_name }}</em>
+                    <span>|</span>
+                    <a href="/user/logout/">退出</a>
 				</div>
+                {% else %}
 				<div class="login_btn fl">
-					<a href="/user/login/">登录</a>
+					<a href="/user/login/" id="denglu">登录</a>
 					<span>|</span>
 					<a href="/user/register/">注册</a>
 				</div>
+                {% endif %}
 				<div class="user_link fl">
 					<span>|</span>
 					<a href="/user/info/">用户中心</a>
 					<span>|</span>
-					<a href="cart.html">我的购物车</a>
+					<a href="/cart/">我的购物车</a>
 					<span>|</span>
 					<a href="/user/order/">我的订单</a>
 				</div>
@@ -33,16 +32,48 @@
 	</div>
 
 	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
-		<div class="sub_page_name fl">|{{ title }}</div>
+		<a href="/" class="logo fl"><img src="/static/images/logo.png"></a>
+        {% if page_name == 1 %}
+		<div class="sub_page_name fl">| &nbsp;{{ title }}</div>
 		<div class="search_con fr">
 			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
 			<input type="button" class="input_btn fr" name="" value="搜索">
 		</div>
+        {% endif %}
+        {% if guest_cart >= 1 %}
+		<div class="search_con fl">
+			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
+			<input type="button" class="input_btn fr" name="" value="搜索">
+		</div>
+		<div class="guest_cart fr">
+			<a href="#" class="cart_name fl">我的购物车</a>
+
+
+			<div class="goods_count fl" id="show_count">1</div>
+		</div>
+        {% endif %}
 	</div>
 
-    <div class="main_con clearfix">
-
-        {% block main %}{% endblock main %}
-	</div>
+    {% block content %}{% endblock content %}
 {% endblock body %}
+
+{#	<script type="text/javascript">#}
+{#		var $add_x = $('#add_cart').offset().top;#}
+{#		var $add_y = $('#add_cart').offset().left;#}
+{##}
+{#		var $to_x = $('#show_count').offset().top;#}
+{#		var $to_y = $('#show_count').offset().left;#}
+{##}
+{#		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'});#}
+{#		$('#add_cart').click(function(){#}
+{#			$(".add_jump").stop().animate({#}
+{#				'left': $to_y+7,#}
+{#				'top': $to_x+7},#}
+{#				"fast", function() {#}
+{#					$(".add_jump").fadeOut('fast',function(){#}
+{#						$('#show_count').html(2);#}
+{#					});#}
+{##}
+{#			});#}
+{#		})#}
+{#	</script>#}

@@ -10,5 +10,6 @@ urlpatterns=[
     path('info/',info),
     path('order/',order),
     path('site/',site),
+    path('logout/',logout),
 
 ]
