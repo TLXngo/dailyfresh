@@ -6,4 +6,6 @@ urlpatterns=[
     path('index/',index),
     re_path(r'^(\d+)/$',detail),
     re_path(r'^list(\d+)_(\d+)_(\d+)/$',list),
+    # path('search/',MySearchView.as_view()),
+    # url(r'^search/$',MySearchView()),
 ]

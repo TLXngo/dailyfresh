@@ -11,5 +11,6 @@ urlpatterns=[
     path('order/',order),
     path('site/',site),
     path('logout/',logout),
+    re_path(r'^user_center_order&(\d+)/$',user_center_order)
 
 ]

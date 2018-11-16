@@ -23,7 +23,7 @@
         </div>
 
         <ul class="goods_type_list clearfix">
-            {% for g in goods_list %}
+            {% for g in page %}
             <li>
                 <a href="/{{ g.id }}/"><img src="/static/{{ g.gpic }}"></a>
                 <h4><a href="/{{ g.id }}/">{{ g.gtitle }}</a></h4>

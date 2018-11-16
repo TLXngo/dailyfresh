@@ -4,6 +4,8 @@ from hashlib import sha1
 from .models import *
 import df_user.user_decorator
 from df_goods.models import *
+from df_order.models import *
+from django.core.paginator import Paginator
 
 def register(request):
     context = {'title': '用户注册 天天生鲜'}
@@ -83,8 +85,6 @@ def info(request):
     if goods_ids!='':
         for goods_id in goods_ids1:
             goods_list.append(GoodsInfo.objects.get(id=int(goods_id)))
-
-
     context={'title':'天天生鲜-用户中心','user_name':request.session['user_name'],'user':user,'page_name':1,
              'goods_list':goods_list}
     return render(request, 'df_user/user_center_info.html',context)
@@ -106,3 +106,22 @@ def site(request):
         user.save()
     context= {'title':'天天生鲜-我的信息','user':user,'page_name':1}
     return render(request,'df_user/user_center_site.html',context)
+
+
+@df_user.user_decorator.login
+def user_center_order(request,pindex):
+    uid=request.session['user_id']
+
+    orderinfos=OrderInfo.objects.filter(user_id=uid).order_by('-oid')
+
+    # 分页
+    paginator=Paginator(orderinfos,2)
+    page=paginator.page(int(pindex))
+
+
+    context={'title':'天天生鲜-我的订单','page_name':1,'orderinfos':orderinfos,'paginator':paginator,
+             'page':page,}
+
+
+    return render(request,'df_user/user_center_order.html',context)
+
